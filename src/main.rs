@@ -11,14 +11,15 @@ fn mult_div_error(number1: &str, ten_power1: i32, number2: &str, ten_power2: i32
     
     //1.) remove the negative sign
     let clean_num1: String = String::from(clean_num(&number1, &mut is_negative, false));
-    let num_places1: i32 = clean_num1.len() as i32; //for multiplication
+    let mut num_places1: i32 = clean_num1.len() as i32; //for multiplication
     if clean_num1.find(".") != None {
         num_places1 -= 1;
+
     }
     let f64_clean_num1: f64 = clean_num1.parse::<f64>().unwrap();
 
     let clean_num2: String = String::from(clean_num(&number2, &mut is_negative, false));
-    let num_dec_places2: i32 = clean_num2.len() as i32; //for multiplication
+    let mut num_places2: i32 = clean_num2.len() as i32; //for multiplication
     if clean_num2.find(".") != None {
         num_places2 -= 1;
     }
@@ -32,10 +33,25 @@ fn mult_div_error(number1: &str, ten_power1: i32, number2: &str, ten_power2: i32
         result = f64_clean_num1 / f64_clean_num2;
     }
 
-    let least_sigfigs = cmp::min(number1.len(), number2.len()) as i32;
-    println!("{}", least_sigfigs);
-    //3.) round to the appropriate nuber of sigfigs
+    let mut str_result: String = String::from(result.to_string());
 
+    let least_sigfigs = cmp::min(num_places1, num_places2) as i32;
+    println!("{}", least_sigfigs);
+
+    //3.) round to the appropriate number of sigfigs
+    let mut dec_idx = str_result.find(".").unwrap();
+    if dec_idx != 1 { //this means that the result is >= 10; this means move the decimal point back and add 
+        let mut do_round: bool = false;
+        if str_result[least_sigfigs as u32].to_digit(10).unwrap() >= 5 {
+            do_round = true;
+        } 
+        str_result = str_result.replace(".", "").substring(0, (least_sigfigs as usize)); //str_result no longer has a decimal point
+        let mut round_result: i64 = str_result.parse::<i64>().unwrap();
+        if do_round {
+            round_result += 1;
+        }
+        str_result.insert(1, '.');
+    }
 
     // print_number(&msmt_vector);
     // count_sig_figs(number2, &mut msmt_vector, &mut isNegative);
