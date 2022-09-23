@@ -1,8 +1,7 @@
 use std::cmp;
 
 fn main() {
-    mult_div_error("1234.12341234", 2, "-1234.1234", 4, "*");
-    // println!("{}", 1.27348509 * 9.12346789)
+    // mult_div_error("1.23412341234", 2, "1.2341234", 4, "*");
 }
 
 fn mult_div_error(number1: &str, ten_power1: i32, number2: &str, ten_power2: i32, operation: &str){
