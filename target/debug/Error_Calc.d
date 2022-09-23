@@ -1,1 +1,1 @@
-/home/danielnguyen/Rust/Projects/Error_Calc/target/debug/Error_Calc: /home/danielnguyen/Rust/Projects/Error_Calc/src/main.rs
+/home/danielnguyen/Rust/Projects/SigFigs-Error-Calculator/target/debug/Error_Calc: /home/danielnguyen/Rust/Projects/SigFigs-Error-Calculator/src/main.rs
