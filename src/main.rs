@@ -1,7 +1,10 @@
 use std::cmp;
 
 fn main() {
-    mult_div_error("5.", 0, "1.", "7.", 0, "2.", "*");
+    mult_div_error("1.1", 1, "1.", "3.10", 0, "0.01", "*");
+    mult_div_error("7.6", 0, "0.4", "8.2", 0, "0.2", "*");
+    mult_div_error("8.", 0, "1.", "9.", 0, "2.", "*");
+    mult_div_error("2.6", 1, "3.", "7.", 0, "1.", "/");
 }
 
 fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str){
@@ -32,8 +35,8 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
         num_places2 -= 1;
     }
     let f64_clean_num2: f64 = clean_num2.parse::<f64>().unwrap();
+    // println!("Num1 {}   Num2 {}", f64_clean_num1, f64_clean_num2);
 
-    println!("Num1 {}   Num2 {}", f64_clean_num1, f64_clean_num2);
     //2.) perform the operation
     let mut result: f64 = 0.0;
     if operation == "*" {
@@ -43,7 +46,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     }
     //to check when putting into scientific notation, whether or not you have to move the decimal place back
     let least_sigfigs = cmp::min(num_places1, num_places2) as i32; //works
-    println!("Result {}     Number of sigfigs to round to {}", result, least_sigfigs);
+    // println!("Result {}     Number of sigfigs to round to {}", result, least_sigfigs);
 
 
     let mut str_result: String = result.to_string();
@@ -68,7 +71,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     }
 
     let final_msmt: String = round_vector(&mut str_result, least_sigfigs, &mut msmt_vector, &mut final_ten_power);
-    println!("{}E{}", final_msmt, final_ten_power);
+    
 
     let mut final_msmt_num: f64 = final_msmt.parse::<f64>().unwrap();
 
@@ -195,8 +198,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
             // final_error_stage3.push_str(&final_error_stage2[dec_pos..dec_pos + num_dec_places + 1]);
         }
     }
-
-    println!("Error: {}", final_error_stage3);
+    println!("{} E {}   +- {}", final_msmt, final_ten_power, final_error_stage3);
     
 }
 
@@ -220,7 +222,7 @@ fn clean_num<'a>(number: &'a str, is_negative: &'a mut bool, is_adding: bool) ->
 
     }
 
-    println!("{}", temp_int);
+    // println!("{}", temp_int);
 
     return temp_int
     // print_number(&msmt_vector);
@@ -254,7 +256,7 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
     //final_ten_power used for regrouping purposes
     let mut result: String = String::new();
     let mut idx = 0;
-    println!("{}", str_result);
+    // println!("{}", str_result);
     let mut dec_pos: usize = str_result.find('.').unwrap();
     
      //getting the position of the '.'
@@ -296,19 +298,23 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
             break;
         }
     }
+    
 
     result = format!("{}{}{}", &result[0..=0], ".".to_string(), &result[1..result.len()]);
     match dec_pos {
+        1 => (),
         2 => {*final_ten_power += 1},
         3 => {*final_ten_power += 2},
-        _ => panic!("wtf did you do with the numbers"),
+        _ => {
+            panic!("wtf did you do with the numbers; Here is your result: {} The dec_pos was at: {}", result, dec_pos);
+        }, 
     }
     return result
 }
 
 fn check_error(number: &str, error: &str, ten_power: &i32) -> bool {
-    println!("{:?}    {:?}", (number[(number.to_string()).find(".").unwrap()..]).len(), ( error[(error.to_string()).find(".").unwrap()..].len()));
-    if ((*ten_power as usize) < number.len() - 1) && (number[(number.to_string()).find(".").unwrap()..]).len() != ( error[(error.to_string()).find(".").unwrap()..].len()) {    
+    // println!("{:?}    {:?}", (number[(number.to_string()).find(".").unwrap()..]).len(), ( error[(error.to_string()).find(".").unwrap()..].len()));
+    if ((*ten_power as usize) < number[number.find(".").unwrap()..].len() - 1) && (number[(number.to_string()).find(".").unwrap()..]).len() != ( error[(error.to_string()).find(".").unwrap()..].len()) { //if the number has decimal places   
         return false
     }
     // } else if error.find(".").unwrap() == (error.len() - 1) { //meaning whole measurement: so error no decimal points
