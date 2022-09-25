@@ -124,38 +124,40 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     }
     let mut final_error_stage3: String = String::new();
     let mut final_error_vec: Vec<u32> = Vec::new();
-    let mut error_ten_power: i32;
+    let mut error_ten_power: i32 = 0;
     if final_msmt_num * ten.powi(final_ten_power) % 1.0 == 0.0 { //This means that the msmt is a whole number
         //The error when applied to just the msmt part, not the tens powers, could be a decimal
         //but it could also be a whole number
         if final_error_stage1 < 1.0 {
             //have to shift the decimal place until we get a whole number, number of places shifted subtract from the final-tens-power
             vectorize(& final_error_stage2, &mut final_error_vec);
-            let mut reduce_ten_pow: i32 = 0;
-            let mut is_number: bool = false;
-            
-            let mut num_digits_left: i32 = 0;
-            for (idx, digit) in final_error_vec.iter().enumerate() {
-                if *digit != 0 && is_number == false{
-                    reduce_ten_pow += 1;
-                    final_error_stage3.push_str(&digit.to_string());
-                    final_error_stage3.push('.');
-                    error_ten_power = final_ten_power - reduce_ten_pow;
-                    num_digits_left = final_ten_power - reduce_ten_pow;
-                    
-                    is_number = true;
-                    
-                } else if idx != 0 {
-                    reduce_ten_pow += 1;
-                } else if is_number == true {
-                    final_error_stage3.push_str(&digit.to_string());
-                    num_digits_left -= 1;
-                    if num_digits_left == 0 {
-                        break;
-                    }
-                }
+            decimal_to_sci_not(&mut final_error_stage3, &mut final_error_vec, &final_msmt, &final_ten_power, &mut error_ten_power);
+            // final_error_stage3 will hold the final version of the error as a string
+            // final_error_vec is used to help with manipulating the digits to get the number into scientific notation
+            // error_ten_power holds the power that the error will be raised to
+            // this method also accounts for rounding
 
-            }
+            // let mut reduce_ten_pow: i32 = 0;
+            // let mut is_number: bool = false;           
+            // let mut num_digits_left: i32 = 0;
+            // for (idx, digit) in final_error_vec.iter().enumerate() {
+            //     if *digit != 0 && is_number == false{
+            //         reduce_ten_pow += 1;
+            //         final_error_stage3.push_str(&digit.to_string());
+            //         final_error_stage3.push('.');
+            //         error_ten_power = final_ten_power - reduce_ten_pow;
+            //         num_digits_left = final_ten_power - reduce_ten_pow;          
+            //         is_number = true;         
+            //     } else if idx != 0 {
+            //         reduce_ten_pow += 1;
+            //     } else if is_number == true {
+            //         final_error_stage3.push_str(&digit.to_string());
+            //         num_digits_left -= 1;
+            //         if num_digits_left == 0 {
+            //             break;
+            //         }
+            //     }
+            // }
             
         } else if final_error_stage1 > 1.0 {
             //have to shift the decimal place 
@@ -165,23 +167,37 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     } else { //if there are decimal places, we need to check that there are the same number of decimal placles
         //find the number of decimal places in the final msmt
         //find what the tens_power is
-        if final_ten_power < 0 {
+        //Possible cases: 1.) the error has too many decimal places 
+        //2.) the error needs more decimal places so add 0s
+        //3.) the error has enough decimal places (will be determined when checking both)
 
-        } else { //otherwise we have a number larger than 0 but with decimal places
-            let num_dec_places = &final_msmt[final_msmt.find(".").unwrap()..final_msmt.len()].len();
+        if final_error_stage1 < 1.0 { //error is a number smaller than 1
+            // let num_dec_places: usize = final_ten_power * -1 + final_msmt.len() as u32 - 1;
+            let dec_pos = final_error_stage2.find(".").unwrap() as u32;
+            vectorize(&final_error_stage2, &mut final_error_vec);
+            decimal_to_sci_not(&mut final_error_stage3, &mut final_error_vec, &final_msmt, &final_ten_power, &mut error_ten_power)
+
+        } else if final_error_stage1 > 1.0 { //otherwise we have a number larger than 1 but with decimal places
+            let num_dec_places: usize = final_msmt[final_msmt.find(".").unwrap()..final_msmt.len()].len();
             let dec_pos = final_error_stage2.find(".").unwrap();
-            if dec_pos + num_dec_places == final_error_stage2.len() as u32 { //has the perfect amt
-                final_error_stage3 = &final_error_stage2;
-            } else if dec_pos + num_dec_places > final_error_stage2.len() as u32 { //meaning that the needed dec_places is more; so add 0s
-                let num_zeros = dec_pos + num_dec_places - (final_error_stage2.len() as u32);
-                for i in [0..num_zeros]
-            } else if dec_pos + num_dec_palces < final_error_stage2.len() as u32 { //meaning that the needed dec_places is less; so rounding
-                round_vector(&mut final_error_stage2, dec_pos + num_dec_places - 1, &mut final_error_vec, error_ten_power);
+            if dec_pos + num_dec_places == final_error_stage2.len() { //has the perfect amt
+                final_error_stage3 = final_error_stage2;
+            } else if dec_pos + num_dec_places > final_error_stage2.len() { //meaning that the needed dec_places is more; so add 0s
+                let num_zeros = dec_pos + num_dec_places - (final_error_stage2.len());
+                for i in [0..num_zeros] {
+                    final_error_stage2.push('0');
+                }
+            } else if dec_pos + num_dec_places < final_error_stage2.len() { //meaning that the needed dec_places is less; so rounding
+                error_ten_power = final_ten_power;
+                round_vector(&mut final_error_stage2, (dec_pos + num_dec_places - 1) as i32 , &mut final_error_vec, &mut error_ten_power);
             }
             // final_error_stage3.push_str(&final_error_stage2[0..dec_pos]);
             // final_error_stage3.push_str(&final_error_stage2[dec_pos..dec_pos + num_dec_places + 1]);
         }
     }
+
+    println!("Error: {}", final_error_stage3);
+    
 }
 
 //This function removes the decimal point and the negative sign;
@@ -231,11 +247,11 @@ fn print_number(msmt_vector: & Vec<u32>) {
     println!("{:?}", msmt_vector);
 }
 
-//str_result can be greater than 1.0
-//rounds to the number of sigfigs
-//stores in msmt_vector
-//final_ten_power used for regrouping purposes
 fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut Vec<u32>, final_ten_power: &mut i32) -> String {
+    //str_result is >= 1.0
+    //rounds to the number of sigfigs
+    //stores in msmt_vector
+    //final_ten_power used for regrouping purposes
     let mut result: String = String::new();
     let mut idx = 0;
     println!("{}", str_result);
@@ -246,6 +262,10 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
     //round the number
 
     //1.) first get the vector without the decimal point
+    if !msmt_vector.is_empty() {
+        msmt_vector.clear();
+    }
+
     vectorize(str_result, msmt_vector);
     let mut regroup = false;
     let digit: u32 = msmt_vector[(least_sigfigs - idx) as usize]; //this starts at the digit after the last sigfig digit
@@ -295,4 +315,54 @@ fn check_error(number: &str, error: &str, ten_power: &i32) -> bool {
     //     return false
     // }
     return true
+}
+
+fn decimal_to_sci_not(str_result: &mut String, final_error_vec: &mut Vec<u32>, final_msmt: &String, final_ten_power: & i32, error_ten_power: &mut i32) {
+    //the purpose of this function is to turn a decimal less than 1 to scientific notation
+    //str_result is empty: it is intended to hold the result
+    //Problem how to get which place to round to: final_ten_power.abs() tells you which idx the number starts at (1 * 10^-2 -> 0.0* where * is at idx 2 in vector)
+    //then you just have to consider the final_msmt.len() - 1 - 1 (remember the decimal place and the ones place)
+    let mut reduce_ten_pow: i32 = 0;
+    let mut is_number: bool = false;
+    let mut need_to_round = false;
+    let mut num_digits_left: i32 = 0;
+    for (idx, digit) in final_error_vec.iter().enumerate() {
+        if *digit != 0 && is_number == false{
+            reduce_ten_pow += 1;
+            str_result.push_str(&digit.to_string());
+            str_result.push('.');
+            *error_ten_power -= final_ten_power;
+            *error_ten_power -= reduce_ten_pow;
+
+            num_digits_left -= final_ten_power;
+            num_digits_left -= reduce_ten_pow;
+            
+            is_number = true;
+            
+        } else if idx != 0 {
+            reduce_ten_pow += 1;
+
+        } else if is_number == true {
+            str_result.push_str(&digit.to_string());
+            num_digits_left -= 1;
+            if num_digits_left == 0 {
+                if idx != final_error_vec.len() { //meaning that there are still digits left, then you need to round
+                    str_result.push_str(&(final_error_vec[idx + 1]).to_string());
+                } //otherwise, there's no need to round because you caught the last digit and there's nothing you need to look at to round
+                break;
+            }
+        }
+
+    }
+
+    if need_to_round {
+        let mut num_dec_places_round = final_ten_power.abs() as i32 + (final_msmt.len() as i32 - 2); //this will get you how many decimal places the final_msmt has
+        num_dec_places_round -= error_ten_power.abs() as i32; 
+        //REMEMBER: final_ten_power = error_ten_power; BUT error_ten_power changes depending on how much smaller the error was, 
+        //since error is smaller, sometimes the error_ten_power is a larger negative value; meaning less places for the error
+
+        //you are rounding the error so this may lead to changes in the error_ten_power, not the final_ten_power of the msmt
+        round_vector(str_result, num_dec_places_round, final_error_vec, error_ten_power);
+    }
+    //now final_error_stage3 will hold the final result, but you need to remember to round
 }
