@@ -1,11 +1,179 @@
 use std::cmp;
 fn main() {
-    mult_div_error("1.1", 1, "1.", "3.10", 0, "0.01", "*");
-    mult_div_error("7.6", 0, "0.4", "8.2", 0, "0.2", "*");
-    mult_div_error("8.", 0, "1.", "9.", 0, "2.", "*");
-    mult_div_error("2.6", 1, "3.", "7.", 0, "1.", "/");
-    mult_div_error("5.", 0, "1.", "7.", 0, "2.", "*");
+    // mult_div_error("1.1", 1, "1.", "3.10", 0, "0.01", "*");
+    // mult_div_error("7.6", 0, "0.4", "8.2", 0, "0.2", "*");
+    // mult_div_error("8.", 0, "1.", "9.", 0, "2.", "*");
+    // mult_div_error("2.6", 1, "3.", "7.", 0, "1.", "/");
+    // mult_div_error("5.", 0, "1.", "7.", 0, "2.", "*");
+    // add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
+    add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
+    // mult_div_error("2.08", 1, "1.9", "2.1", 1, "2.", "/");
 }
+
+fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str) {
+    let valid_input1: bool = check_error(&number1, &error1, &ten_power1);
+    let valid_input2: bool = check_error(&number2, &error2, &ten_power2);
+    if !valid_input1 || !valid_input2 {
+        panic!("wtf are you doing with the msmts and errors");
+    }
+
+    let mut number1_vec: Vec<u32> = Vec::new();
+    vectorize(& String::from(number1), &mut number1_vec);
+
+    let mut number2_vec: Vec<u32> = Vec::new();
+    vectorize(& String::from(number2), &mut number2_vec);
+
+    //adding and manipulating 0s
+    let mut dec_idx1: i32 = 0;
+    let mut dec_idx2: i32 = 0;
+
+    let mut m_ten_power1: i32 = ten_power1.clone();
+    let mut m_ten_power2: i32 = ten_power2.clone();
+
+    if ten_power1 != ten_power2 {
+        if ten_power1 > ten_power2 { //ten_power1 is greater, so shift it down; ten_power2 is smaller so shift it up
+            adjust_to_same_ten_power(&mut number1_vec, &mut m_ten_power1, &mut dec_idx1, &mut number2_vec, &mut m_ten_power2, &mut dec_idx2);
+        } else if ten_power1 < ten_power2 { //ten_power1 is smaller, so shift it up; ten_power2 is bigger so shift it down
+            adjust_to_same_ten_power(&mut number2_vec, &mut m_ten_power2, &mut dec_idx2, &mut number1_vec, &mut m_ten_power1, &mut dec_idx1);
+        }
+    }
+
+    //get the same digits but make sure to keep the decimal place in the correct position; add 0s to match the place values but not change the value
+    let most_num_whole_places = cmp::max(dec_idx1, dec_idx2);
+    let num_dec_places1 = number2_vec.len() as u32 - dec_idx2 as u32 - 1_u32;
+    let num_dec_places2 = number1_vec.len() as u32 - dec_idx1 as u32 - 1_u32;
+    let most_num_dec_places = cmp::max(& num_dec_places1, & num_dec_places2);
+    
+    check_whole_places(&mut number1_vec, &mut dec_idx1, most_num_whole_places);
+    check_whole_places(&mut number2_vec, &mut dec_idx2, most_num_whole_places);
+    check_dec_places(&mut number1_vec, dec_idx1, *most_num_dec_places);
+    check_dec_places(&mut number2_vec, dec_idx2, *most_num_dec_places);
+
+    let mut result_vec: Vec<u32> = Vec::new();
+
+    let mut big_regroup = false; //for regrouping when i = 0; (the first sigfig)
+    match operation {
+        "+" => {
+            let mut regroup = false;
+            for i in (0..number1_vec.len()).rev() {
+                let mut digit = number1_vec[i] + number2_vec[i];
+                if regroup {
+                    digit += 1;
+                    regroup = false;
+                }
+
+                if digit >= 10 {
+                    digit -= 10;
+                    regroup = true;
+                    if i == 0 {
+                        big_regroup = true;
+                    }
+                }
+                result_vec.insert(0, digit as u32);
+                
+            }
+
+        },
+        "-" => {
+            let mut regroup = false;
+            for i in (0..number1_vec.len()).rev() {
+                let mut digit: i32 = number1_vec[i] as i32 - number2_vec[i] as i32;
+                if regroup {
+                    digit -= 1;
+                }
+
+                if digit < 0 {
+                    regroup = true;
+                    digit.abs();
+                }
+
+                result_vec.insert(0, digit as u32);
+            }
+        },
+        _ => panic!("wtf are you doing, pick either + or -"),
+    }
+
+    let mut is_number = false;
+    let mut result_str = String::new();
+
+    let least_dec_places = cmp::min(num_dec_places1, num_dec_places2);
+    let mut starting_dec_places = false;
+    let mut num_dec_places_added = 0;
+    for (idx, digit) in result_vec.iter().enumerate() {
+        if !is_number && *digit != 0_u32 {
+            is_number = true;
+            result_str.push_str(&digit.to_string());
+        } else if idx == dec_idx1 as usize && is_number && !starting_dec_places {
+            result_str.push_str(&digit.to_string());
+            result_str.push_str(".");
+            starting_dec_places = true;
+        } else if is_number && starting_dec_places && num_dec_places_added < least_dec_places {
+            num_dec_places_added += 1;
+            result_str.push_str(&digit.to_string());
+        }
+
+
+    }
+    
+    let result_num = result_str.parse::<f64>().unwrap();
+    // *************
+    
+    let error: f64 = (error1.parse::<f64>().unwrap().powi(2) + error2.parse::<f64>().unwrap().powi(2)).sqrt();
+    let mut error_str = error.to_string();
+    error_str = error_str[0..=error_str.find(".").unwrap() + least_dec_places as usize].to_string();
+
+
+    println!("{}    error: {}", result_str, error_str);
+    
+
+}
+
+
+fn check_whole_places(number_vec: &mut Vec<u32>, dec_idx: &mut i32, num_whole_places: i32) {
+    loop {
+        // println!("{}", dec_idx);
+        if *dec_idx + 1 != num_whole_places {
+            break;
+        }
+
+        number_vec.insert(0, 0);
+        *dec_idx += 1;
+    }
+}
+
+fn check_dec_places(number_vec: &mut Vec<u32>, dec_idx: i32, num_dec_places: u32) {
+    while number_vec.len() as u32 - (dec_idx + 1) as u32 == num_dec_places{
+        number_vec.push(0);
+    }
+}
+
+
+
+
+fn adjust_to_same_ten_power(larger_vec: &mut Vec<u32>, larger_ten_power: &mut i32, larger_dec_idx: &mut i32, smaller_vec: &mut Vec<u32>, smaller_ten_power: &mut i32, smaller_dec_idx: &mut i32) {
+    loop {
+        if larger_ten_power != smaller_ten_power {
+            //shift the larger_ten_power down, meaning add 0s at the beginning
+            //shift the smaller_ten_power up, meaning add 1s at the beginning
+            *larger_ten_power -= 1;
+            *larger_dec_idx += 1;
+            if *larger_dec_idx as u32 > larger_vec.len() as u32 {
+                larger_vec.push(0);
+            }
+
+            if larger_ten_power != smaller_ten_power {
+                *smaller_ten_power += 1;
+                // smaller_dec_idx doesn't change
+                smaller_vec.insert(0, 0);
+            } else {
+                break;
+            }
+
+        }
+    }
+
+}
+
 
 fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str){
     //make sure that the errors properly match the measurement and the number of decimal places
@@ -47,25 +215,38 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     //to check when putting into scientific notation, whether or not you have to move the decimal place back
     let least_sigfigs = cmp::min(num_places1, num_places2) as i32; //works
     
+    let mut final_ten_power: i32 = 0;
+    
+    loop {
+        if result < 1.0 {
+            result *= 10.0;
+            final_ten_power -= 1;
+        } else {
+            break;
+        }
+    }
+        
 
 
+    
     let mut str_result: String = result.to_string();
     if str_result.find('.') == None {
         str_result.push('.');
     }
+    
+
     //3.) round to the appropriate number of sigfigs
     // First: obtain the digit after the last place
     //vectorize the digit to make this possible
     //Second: identify if this digit is >= 5, if so, then increase the previous digit by one
 
     // vectorize(str_result, &mut msmt_vector);
-    let mut final_ten_power: i32;
     match operation {
         "*" => {
-            final_ten_power = ten_power1 + ten_power2;
+            final_ten_power += ten_power1 + ten_power2;
         }, 
         "/" => {
-            final_ten_power = ten_power1 - ten_power2;
+            final_ten_power += ten_power1 - ten_power2;
         },
         _ => panic!("Please enter either * for multiplication or / for division"),
     }
@@ -74,10 +255,13 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
         str_result = (result * 10_f64.powi(final_ten_power)).to_string();
         final_ten_power = 0;
     }
+    // println!("{}  {}", str_result, final_ten_power);
+    
+    //clean up str_result so that it has a digit larger than 1
+
     let final_msmt: String = round_vector(&mut str_result, least_sigfigs, &mut msmt_vector, &mut final_ten_power);
     
     let mut final_msmt_num: f64 = final_msmt.parse::<f64>().unwrap();
-
 
 
 
@@ -88,7 +272,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     let e_percent1: f64 = error1.parse::<f64>().unwrap() / f64_clean_num1 / 10_f64.powi(ten_power1);
     let e_percent2: f64 = error2.parse::<f64>().unwrap() / f64_clean_num2 / 10_f64.powi(ten_power2);
 
-    let e_result: f64 = f64::sqrt(e_percent1.powi(2) + e_percent2.powi(2));
+    let e_result: f64 = f64::sqrt(e_percent1.powi(2) + e_percent2.powi(2)); //this is the RMS_percent
     
     let mut e_str: String = e_result.to_string();
     e_str = e_str.replace(".", ""); //you always know that the percentage can never be over 100
@@ -187,6 +371,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
             
         } else if final_error_stage1 > 1.0 { 
             //have to shift the decimal place
+            // println!("Error is greater than 0");
             if final_error_stage1 * 10_f64.powi(final_ten_power) % 1.0 == 0.0 {
                 final_error_stage3 = final_error_stage2;
                 error_ten_power = final_ten_power.clone();
@@ -207,9 +392,10 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
         //Possible cases: 1.) the error has too many decimal places 
         //2.) the error needs more decimal places so add 0s
         //3.) the error has enough decimal places (will be determined when checking both)
-
+        // println!("{}", final_error_stage1);
         if final_error_stage1 < 1.0 { //error is a number smaller than 1
             // let num_dec_places: usize = final_ten_power * -1 + final_msmt.len() as u32 - 1;
+            
             let dec_pos = final_error_stage2.find(".").unwrap() as u32;
             vectorize(&final_error_stage2, &mut final_error_vec);
             decimal_to_sci_not(&mut final_error_stage3, &mut final_error_vec, &final_msmt, &final_ten_power, &mut error_ten_power)
@@ -226,7 +412,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
                 }
             } else if dec_pos + num_dec_places < final_error_stage2.len() { //meaning that the needed dec_places is less; so rounding
                 error_ten_power = final_ten_power;
-                round_vector(&mut final_error_stage2, (dec_pos + num_dec_places - 1) as i32 , &mut final_error_vec, &mut error_ten_power);
+                final_error_stage3 = round_vector(&mut final_error_stage2, (dec_pos + num_dec_places - 1) as i32 , &mut final_error_vec, &mut error_ten_power);
             }
             // final_error_stage3.push_str(&final_error_stage2[0..dec_pos]);
             // final_error_stage3.push_str(&final_error_stage2[dec_pos..dec_pos + num_dec_places + 1]);
@@ -290,8 +476,8 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
 
     let mut idx = 0;
     
-    let mut dec_pos: usize = str_result.find('.').unwrap();
-    
+    let mut dec_pos: usize = str_result.find('.').unwrap() - 1 as usize;
+    // println!("{}", dec_pos);
      //getting the position of the '.'
     //taken from the string; means that this can either be 1 or 2; must check if the first element in the vector regroups to add one more to the position of the '.'
     //round the number
@@ -302,14 +488,21 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
     }
 
     vectorize(str_result, msmt_vector);
-    // print_number(msmt_vector);
+    
+
+    // println!("{:?} {}", msmt_vector, least_sigfigs);
     let mut regroup = false;
-    let digit: u32 = msmt_vector[(least_sigfigs) as usize]; //this starts at the digit after the last sigfig digit
+    let mut extra_for_less_than_zero = 0;
+    if msmt_vector[0] == 0 {
+        extra_for_less_than_zero = 1;
+    }
+    let digit: u32 = msmt_vector[(least_sigfigs + extra_for_less_than_zero) as usize]; //this starts at the digit after the last sigfig digit
     if digit >= 5 { //if the digit after the last sigfig is greater than or equal to 5, then the previous...
         regroup = true;
     }
+
     loop {
-        let mut last_sigfig = msmt_vector[(least_sigfigs - 1 - idx) as usize];
+        let mut last_sigfig = msmt_vector[(least_sigfigs + extra_for_less_than_zero - 1 - idx) as usize];
         if regroup {
             last_sigfig += 1;
             if last_sigfig >= 10  {
@@ -337,9 +530,9 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
     result = format!("{}{}{}", &result[0..=0], ".".to_string(), &result[1..result.len()]);
     
     match dec_pos {
-        1 => (),
-        2 => {*final_ten_power += 1},
-        3 => {*final_ten_power += 2},
+        0 => (),
+        1 => {*final_ten_power += 1},
+        2 => {*final_ten_power += 2},
         _ => {
             panic!("wtf did you do with the numbers; Here is your result: {} The dec_pos was at: {}", result, dec_pos);
         }, 
@@ -348,25 +541,34 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
 }
 
 fn check_error(number: &str, error: &str, ten_power: &i32) -> bool {
-    if ((*ten_power as usize) < number[number.find(".").unwrap()..].len() - 1) && (number[(number.to_string()).find(".").unwrap()..]).len() != ( error[(error.to_string()).find(".").unwrap()..].len()) { //if the number has decimal places   
-        return false
-    }
+    // if ((*ten_power as usize) < number[number.find(".").unwrap()..].len() - 1) && (number[(number.to_string()).find(".").unwrap()..]).len() != ( error[(error.to_string()).find(".").unwrap()..].len()) { //if the number has decimal places   
+    //     return false
+    // }
     // } else if error.find(".").unwrap() == (error.len() - 1) { //meaning whole measurement: so error no decimal points
     //     return false
     // }
+    let n_dec_idx = number.find(".").unwrap();
+    let e_dec_idx = error.find(".").unwrap();
+    if number[n_dec_idx + ten_power.clone() as usize..].len() as u32 != error[e_dec_idx..].len() as u32 {
+        return false
+    }
+
     return true
 }
 
+//for errors only
 fn decimal_to_sci_not(str_result: &mut String, final_error_vec: &mut Vec<u32>, final_msmt: &String, final_ten_power: & i32, error_ten_power: &mut i32) {
     //the purpose of this function is to turn a decimal less than 1 to scientific notation
     //str_result is empty: it is intended to hold the result
+    //final_error_vec contains the number
     //Problem how to get which place to round to: final_ten_power.abs() tells you which idx the number starts at (1 * 10^-2 -> 0.0* where * is at idx 2 in vector)
     //then you just have to consider the final_msmt.len() - 1 - 1 (remember the decimal place and the ones place)
     let mut reduce_ten_pow: i32 = 0;
     let mut is_number: bool = false;
     let mut need_to_round = false;
     let mut num_digits_left: i32 = -1;
-    // print_number(&final_error_vec);
+    
+    //this is the part actually doing the conversion to sci
     for (idx, digit) in final_error_vec.iter().enumerate() {
         if *digit != 0 && is_number == false && idx != 0{
             reduce_ten_pow += 1;
