@@ -7,6 +7,7 @@ fn main() {
     mult_div_error("5.", 0, "1.", "7.", 0, "2.", "*");
     // add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
     // add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
+    mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
     mult_div_error("2.08", 1, "1.9", "2.1", 2, "2.", "/");
 }
 
@@ -399,7 +400,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
             // let num_dec_places: usize = final_ten_power * -1 + final_msmt.len() as u32 - 1;
             let dec_pos = final_error_stage2.find(".").unwrap() as u32;
             vectorize(&final_error_stage2, &mut final_error_vec);
-            // print_number(&final_error_vec);
+            print_number(&final_error_vec);
             decimal_to_sci_not(&mut final_error_stage3, &mut final_error_vec, &final_msmt, &final_ten_power, &mut error_ten_power);
             
             
@@ -494,7 +495,7 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
     vectorize(str_result, msmt_vector);
     
 
-    println!("{:?} {}", msmt_vector, least_sigfigs);
+    
     let mut regroup = false;
     let mut extra_for_less_than_zero = 0;
     // if msmt_vector[0] == 0 {
@@ -510,7 +511,7 @@ fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut V
         regroup = true;
     }
 
-    println!("{:?}", msmt_vector);
+    
     loop {
         let mut last_sigfig = msmt_vector[(least_sigfigs + extra_for_less_than_zero - 1 - idx) as usize];
 
@@ -616,7 +617,7 @@ fn decimal_to_sci_not(str_result: &mut String, final_error_vec: &mut Vec<u32>, f
                 num_digits_left =  num_dec_places_in_msmt as i32 - reduce_ten_pow + *final_ten_power;
                 
             }
-            println!("{}    {}    {}", final_msmt, num_digits_left, num_dec_places_in_msmt);
+            // println!("{}    {}    {}", final_msmt, num_digits_left, num_dec_places_in_msmt);
             
             //else if *final_ten_power < 0 {
             //     *error_ten_power += ;
