@@ -9,7 +9,7 @@ fn main() {
     // add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
     mult_div_error("2.08", 1, "1.9", "2.1", 2, "2.", "/");
     mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
-    mult_div_error("2.08", 0, "0.19", "2.10", 2, "2.", "/");
+    mult_div_error("2.08", 0, "0.19", "2.1", 3, "2.", "/");
 }
 
 fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str) {
