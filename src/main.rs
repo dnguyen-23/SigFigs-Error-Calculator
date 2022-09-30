@@ -9,6 +9,7 @@ fn main() {
     // add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
     mult_div_error("2.08", 1, "1.9", "2.1", 2, "2.", "/");
     mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
+    mult_div_error("2.08", 0, "0.19", "2.10", 2, "2.", "/");
 }
 
 fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str) {
@@ -657,6 +658,7 @@ fn decimal_to_sci_not(str_result: &mut String, final_error_vec: &mut Vec<u32>, f
 
     }
 
+    print_number(&final_error_vec);
     if need_to_round {
         // let mut num_dec_places_round = final_ten_power.abs() as i32 + (final_msmt.len() as i32 - 2); //this will get you how many decimal places the final_msmt has
         let mut num_dec_places_round = num_dec_places_in_msmt.clone();
@@ -664,8 +666,9 @@ fn decimal_to_sci_not(str_result: &mut String, final_error_vec: &mut Vec<u32>, f
         //     num_dec_places_round -= *final_ten_power
         // }
         
-        num_dec_places_round += *error_ten_power + 1; 
-        // println!("{}", num_dec_places_round);
+        num_dec_places_round += *error_ten_power + 1;
+        
+        println!("{} {}", num_dec_places_in_msmt, num_dec_places_round);
 
         //error_ten_power is always negative
 
