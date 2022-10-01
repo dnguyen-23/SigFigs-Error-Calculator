@@ -402,6 +402,10 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
             // let num_dec_places: usize = final_ten_power * -1 + final_msmt.len() as u32 - 1;
             let dec_pos = final_error_stage2.find(".").unwrap() as u32;
             vectorize(&final_error_stage2, &mut final_error_vec);
+<<<<<<< HEAD
+            print_number(&final_error_vec);
+=======
+>>>>>>> b3e99e11f04946238034968ca334251300e524d8
             decimal_to_sci_not(&mut final_error_stage3, &mut final_error_vec, &final_msmt, &final_ten_power, &mut error_ten_power);
             
             
@@ -616,7 +620,11 @@ fn decimal_to_sci_not(str_result: &mut String, final_error_vec: &mut Vec<u32>, f
                 num_digits_left =  num_dec_places_in_msmt as i32 - reduce_ten_pow + *final_ten_power;
                 
             }
-            // // println!("{}    {}    {}   {}", final_msmt, num_digits_left, num_dec_places_in_msmt, error_ten_power);
+<<<<<<< HEAD
+            // println!("{}    {}    {}", final_msmt, num_digits_left, num_dec_places_in_msmt);
+=======
+            // println!("{}    {}    {}   {}", final_msmt, num_digits_left, num_dec_places_in_msmt, error_ten_power);
+>>>>>>> b3e99e11f04946238034968ca334251300e524d8
             
             //else if *final_ten_power < 0 {
             //     *error_ten_power += ;
