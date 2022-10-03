@@ -133,8 +133,8 @@ fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, te
     let mut result_str = String::new();
 
     let least_dec_places = cmp::min(num_dec_places1, num_dec_places2);
-    let mut starting_dec_places = false;
-    let mut num_dec_places_added = 0;
+    // let mut starting_dec_places = false;
+    // let mut num_dec_places_added = 0;
     //keep as whole number first and then round as integer and then put decimal place
 
     let mut final_regroup = false; //regroup or not
