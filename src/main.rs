@@ -17,10 +17,24 @@ fn main() {
     // mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
     // mult_div_error("2.08", 0, "0.19", "2.1", 3, "2.", "/");
 
+    // add_sub_error("8.575", -1, "0.0429", "1.59", -1, "0.021", "-");
+    // mult_div_error("2.194", 0, "0.151", "1.1", -1, "0.05", "*");
+    
+    //density
     add_sub_error("8.575", -1, "0.0429", "1.59", -1, "0.021", "-");
-    mult_div_error("2.194", 0, "0.151", "1.1", -1, "0.05", "*");
+    mult_div_error("2.20", 0, "0.15", "1.1", -1, "0.05", "*");
+    
     add_sub_error("9.0089", -1, "0.01802", "1.554", -1, "0.0016", "-");
+    mult_div_error("2.342", 0, "0.057","1.25", -1, "0.007", "*");
 
+    add_sub_error("9.29007", -1, "0.037160", "1.554", -1, "0.0016", "-");
+    mult_div_error("2.430", 0, "0.117", "1.6713", -1, "0.00881", "*");
+    
+    println!("\n\n\n\n");
+    mult_div_error("2.508", 0, "0.034", "2.4", -1, "0.11", "/");
+    mult_div_error("2.508", 0, "0.034", "2.93", -1, "0.018", "/");
+    mult_div_error("2.508", 0, "0.034", "4.061", -1, "0.0284", "/");
+    mult_div_error("8.450", 0, "0.015", "1.0718", 0, "0.0006", "/");
 
 }
 
@@ -113,6 +127,7 @@ fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, te
                     if num1 == 0 {
                         final_ten_power -= 1;
                     }
+                    regroup = false;
                 }
 
                 if num1 < num2 {
@@ -174,7 +189,7 @@ fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, te
                     final_regroup = true;
                     cur_digit -= 10;
                 }
-                println!("{}  {}", cur_digit, least_dec_places);
+                // println!("{}  {}", cur_digit, least_dec_places);
                 result_str = format!("{}{}", cur_digit, result_str);
 
             }
@@ -274,8 +289,6 @@ fn check_dec_places(number_vec: &mut Vec<u32>, dec_idx: i32, num_dec_places: u32
         number_vec.push(0);
     }
 }
-
-
 
 
 fn adjust_to_same_ten_power(larger_vec: &mut Vec<u32>, larger_ten_power: &mut i32, larger_dec_idx: &mut i32, smaller_vec: &mut Vec<u32>, smaller_ten_power: &mut i32, smaller_dec_idx: &mut i32) {
@@ -401,7 +414,6 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     let e_percent2: f64 = error2.parse::<f64>().unwrap() / f64_clean_num2 / 10_f64.powi(ten_power2);
 
     let e_result: f64 = f64::sqrt(e_percent1.powi(2) + e_percent2.powi(2)); //this is the RMS_percent
-    
     let mut e_str: String = e_result.to_string();
     e_str = e_str.replace(".", ""); //you always know that the percentage can never be over 100
     //this means that as a decimal, the value is never greater than 10 or even 1
