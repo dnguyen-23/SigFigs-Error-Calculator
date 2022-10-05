@@ -11,10 +11,15 @@ fn main() {
     // mult_div_error("2.08", 1, "1.9", "2.1", 2, "2.", "/");
     // mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
     // mult_div_error("2.08", 0, "0.19", "2.1", 3, "2.", "/");
+    // mult_div_error("2.194", 0, "0.151", "1.1", -1, "0.05", "*");
 
-    add_sub_error("8.575", -1, "0.0429", "1.59", -1, "0.021", "-");
-    mult_div_error("2.194", 0, "0.151", "1.1", -1, "0.05", "*");
-    add_sub_error("9.0089", -1, "0.01802", "1.554", -1, "0.0016", "-");
+    // add_sub_error("8.575", -1, "0.0429", "1.59", -1, "0.021", "-");
+    // add_sub_error("9.0089", -1, "0.01802", "1.554", -1, "0.0016", "-");
+    // add_sub_error("8.77688", -1, "0.026331", "1.554", -1, "0.0016", "-");
+
+    mult_div_error("2.20", 0, "0.15", "1.1", -1, "0.05", "*");
+    mult_div_error("2.342", 0, "0.057", "1.25", -1, "0.007", "*");
+    mult_div_error("2.269", 0, "0.083", "1.6713", -1, "0.00881", "*");
 
 }
 
@@ -444,7 +449,7 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     if final_error_stage2.find(".") == None {
         final_error_stage2.push('.');
     }
-    
+    // println!("{}",rms_percent_f);
     let mut final_error_stage3: String = String::new();
     let mut final_error_vec: Vec<u32> = Vec::new();
     let mut error_ten_power = 0;
