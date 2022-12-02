@@ -7,6 +7,11 @@ fn main() {
     // mult_div_error("5.", 0, "1.", "7.", 0, "2.", "*");
     // add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
     // add_sub_error("1.87", 1, "1.9", "2.1", 0, "0.1", "+");
+
+    // mult_div_error("2.08", 1, "1.9", "2.1", 2, "2.", "/");
+    // mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
+    // mult_div_error("2.080", 0, "0.190", "2.100", 3, "2.", "/");
+
     // mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
     // mult_div_error("2.08", 1, "1.9", "2.1", 2, "2.", "/");
     // mult_div_error("2.08", 1, "1.9", "2.10", 2, "2.", "/");
@@ -14,12 +19,70 @@ fn main() {
     // mult_div_error("2.194", 0, "0.151", "1.1", -1, "0.05", "*");
 
     // add_sub_error("8.575", -1, "0.0429", "1.59", -1, "0.021", "-");
+    // mult_div_error("2.194", 0, "0.151", "1.1", -1, "0.05", "*");
+    
+    //density
+    // add_sub_error("8.575", -1, "0.0429", "1.59", -1, "0.021", "-");
+    // mult_div_error("2.20", 0, "0.15", "1.1", -1, "0.05", "*");
+    
     // add_sub_error("9.0089", -1, "0.01802", "1.554", -1, "0.0016", "-");
-    // add_sub_error("8.77688", -1, "0.026331", "1.554", -1, "0.0016", "-");
+    // mult_div_error("2.342", 0, "0.057","1.25", -1, "0.007", "*");
 
-    mult_div_error("2.20", 0, "0.15", "1.1", -1, "0.05", "*");
-    mult_div_error("2.342", 0, "0.057", "1.25", -1, "0.007", "*");
-    mult_div_error("2.269", 0, "0.083", "1.6713", -1, "0.00881", "*");
+    // add_sub_error("9.29007", -1, "0.037160", "1.554", -1, "0.0016", "-");
+    // mult_div_error("2.430", 0, "0.117", "1.6713", -1, "0.00881", "*");
+    
+    // println!("\n\n\n\n");
+    // mult_div_error("2.508", 0, "0.034", "2.4", -1, "0.11", "/");
+    // mult_div_error("2.508", 0, "0.034", "2.93", -1, "0.018", "/");
+    // mult_div_error("2.508", 0, "0.034", "4.061", -1, "0.0284", "/");
+    // mult_div_error("8.450", 0, "0.015", "1.0718", 0, "0.0006", "/");
+
+    // mult_div_error("4.000", 1, "0.05", "2.32935", -1, "0.002329", "/");
+    // mult_div_error("5.000", 1, "0.05", "2.96698", -1, "0.002967", "/");
+    // mult_div_error("6.000", 1, "0.05", "3.75361", -1, "0.003754", "/");
+    // mult_div_error("7.000", 1, "0.05", "6.45067", -1, "0.001450", "/");
+    // mult_div_error("8.000", 1, "0.05", "4.77388", -1, "0.004774", "/");
+    // println!("\n");
+    // mult_div_error("4.000", 1, "0.05", "1.51113", -1, "0.004533", "/");
+    // mult_div_error("5.000", 1, "0.05", "1.87143", -1, "0.007486", "/");
+    // mult_div_error("6.000", 1, "0.05", "2.20743", -1, "0.006622", "/");
+    // mult_div_error("7.000", 1, "0.05", "2.48469", -1, "0.002485", "/");
+    // mult_div_error("8.000", 1, "0.05", "2.78010", -1, "0.002224", "/");
+
+    
+    // mult_div_error("1.9051", -2, "0.000005", "1.607", -2, "0.00015", "/");
+    // mult_div_error("1.9051", -2, "0.000005", "1.607", -2, "0.00015", "/");
+
+    // free fall lab
+    // let msmts_neg2 = vec![["1.607", "0.00015"],
+    //                                     ["1.617", "0.00009"],
+    //                                     ["1.597", "0.00007"],
+    //                                     ["1.610", "0.00006"],
+    //                                     ["1.603", "0.00013"],
+    //                                     ["1.600", "0.00006"],
+    //                                     ["1.607", "0.00003"],
+    //                                     ["1.603", "0.00009"]];
+
+    // for idx in msmts_neg2.iter() {
+    //     mult_div_error("1.9051", -2, "0.000005", idx[0], -2, idx[1], "/");
+    // }
+
+    // println!("\n\n\n\n");
+
+    // let msmts_neg3 = vec![["8.77", "0.00018"],
+    //                                     ["8.03", "0.00012"],
+    //                                     ["7.03", "0.00009"],
+    //                                     ["6.83", "0.00017"],
+    //                                     ["6.33", "0.00018"],
+    //                                     ["6.07", "0.00013"],
+    //                                     ["5.70", "0.00010"],
+    //                                     ["5.50", "0.00012"]];
+
+    // for idx in msmts_neg3.iter() {
+    //     mult_div_error("1.9051", -2, "0.000005", idx[0], -3, idx[1], "/");
+    // }
+
+    add_sub_error("2.17", 0, "0.04", "1.187", 0, "0.011", "-");
 
 }
 
@@ -37,220 +100,54 @@ fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, te
     vectorize(& String::from(number2), &mut number2_vec);
 
     //adding and manipulating 0s
-    let mut dec_idx1: i32 = 0;
-    let mut dec_idx2: i32 = 0;
+    let dec_idx1: i32 = 0;
+    let dec_idx2: i32 = 0;
 
-    let mut m_ten_power1: i32 = ten_power1.clone();
-    let mut m_ten_power2: i32 = ten_power2.clone();
+   
+    let mut num_dec_places1 = number1_vec.len() as i32 - dec_idx2 as i32 - 1_i32 - ten_power1;
+    let mut num_dec_places2 = number2_vec.len() as i32 - dec_idx1 as i32 - 1_i32 - ten_power2;
+    if num_dec_places1 < 0 {
+        num_dec_places1 = 0;
+    }
+    if num_dec_places2 < 0 {
+        num_dec_places2 = 0;
+    }
 
-    if ten_power1 != ten_power2 {
-        if ten_power1 > ten_power2 { //ten_power1 is greater, so shift it down; ten_power2 is smaller so shift it up
-            adjust_to_same_ten_power(&mut number1_vec, &mut m_ten_power1, &mut dec_idx1, &mut number2_vec, &mut m_ten_power2, &mut dec_idx2);
-        } else if ten_power1 < ten_power2 { //ten_power1 is smaller, so shift it up; ten_power2 is bigger so shift it down
-            adjust_to_same_ten_power(&mut number2_vec, &mut m_ten_power2, &mut dec_idx2, &mut number1_vec, &mut m_ten_power1, &mut dec_idx1);
+
+    let mut result: f32 = 0.0;
+    if operation == "-" {
+        result = &number1.parse::<f32>().unwrap() * 10f32.powf(ten_power1 as f32) - &number2.parse::<f32>().unwrap() * 10f32.powf(ten_power2 as f32);
+    } else if operation == "+" {
+        result = &number1.parse::<f32>().unwrap() * 10f32.powf(ten_power1 as f32) + &number2.parse::<f32>().unwrap() * 10f32.powf(ten_power2 as f32);
+    }
+
+    let mut result_ten_power: i32 = 0;
+    if result < 10_f32 {
+        while result < 1.0 {
+            result *= 10_f32;
+            result_ten_power -= 1;
+        }
+    } else if result > 10_f32 {
+        while result > 1.0 {
+            result /= 10_f32;
+            result_ten_power += 1;
         }
     }
 
-    //get the same digits but make sure to keep the decimal place in the correct position; add 0s to match the place values but not change the value
-    let most_num_whole_places = cmp::max(dec_idx1, dec_idx2);
-    let num_dec_places1 = number2_vec.len() as i32 - dec_idx2 as i32 - 1_i32 - ten_power1;
-    let num_dec_places2 = number1_vec.len() as i32 - dec_idx1 as i32 - 1_i32 - ten_power2;
-    let most_num_dec_places = *cmp::max(& num_dec_places1, & num_dec_places2) as u32;
-    
-    check_whole_places(&mut number1_vec, &mut dec_idx1, most_num_whole_places);
-    check_whole_places(&mut number2_vec, &mut dec_idx2, most_num_whole_places);
-    check_dec_places(&mut number1_vec, dec_idx1, most_num_dec_places);
-    check_dec_places(&mut number2_vec, dec_idx2, most_num_dec_places);
-    //at this point, dec_idx1 and dec_idx2 are the same number
 
-
-    // print_number(&number1_vec);
-    // print_number(&number2_vec);
-
-    let mut result_vec: Vec<u32> = Vec::new();
-    
-    let mut big_regroup = false; //for regrouping when i = 0; (the first sigfig)
-    let mut final_ten_power = m_ten_power1.clone();
-    match operation {
-        "+" => {
-            let mut regroup = false;
-            for i in (0..number1_vec.len()).rev() {
-                let mut digit = number1_vec[i] + number2_vec[i];
-                if regroup {
-                    digit += 1;
-                    regroup = false;
-                }
-
-                if digit >= 10 {
-                    digit -= 10;
-                    regroup = true;
-                    if i == 0 {
-                        big_regroup = true;
-                    }
-                }
-                result_vec.insert(0, digit as u32);
-                
-            }
-            if big_regroup {
-                result_vec.insert(0, 1_u32);
-                dec_idx1 += 1;
-                dec_idx2 += 1;
-                final_ten_power += 1;
-            }
-
-        },
-        "-" => {
-            let mut regroup = false;
-            for i in (0..number1_vec.len()).rev() {
-                // let mut digit: i32 = number1_vec[i] as i32 - number2_vec[i] as i32;
-                let mut num1 = number1_vec[i] as i32;
-                // print_number(&number1_vec);
-                // print_number(&number2_vec);
-                let num2 = number2_vec[i] as i32;
-                if regroup {
-                    num1 -= 1;
-                    if num1 == 0 {
-                        final_ten_power -= 1;
-                    }
-                }
-
-                if num1 < num2 {
-                    regroup = true;
-                    num1 += 10;
-                }
-
-                let digit = num1 - num2;
-
-                result_vec.insert(0, digit as u32);
-                
-            }
-        },
-        _ => panic!("wtf are you doing, pick either + or -"),
-    }
-
-    let mut is_number = false;
     let mut result_str = String::new();
 
-    let least_dec_places = cmp::min(num_dec_places1, num_dec_places2);
-    let mut starting_dec_places = false;
-    let mut num_dec_places_added = 0;
-    //keep as whole number first and then round as integer and then put decimal place
-
-    let mut final_regroup = false; //regroup or not
-    // println!("{:?}", result_vec);
-    for (idx, digit) in result_vec.iter().enumerate().rev() {
-        let mut cur_digit = digit.clone();
-        if is_number {
-            if dec_idx1 == idx as i32 {
-                if dec_idx1 != 0 {
-                    dec_idx1 -= 1;
-                    final_ten_power += 1;
-                    if final_regroup {
-                        cur_digit += 1;
-                    }
-                    if cur_digit >= 10 {
-                        final_regroup = true;
-                        cur_digit -= 10;
-                    }
-                    // println!("{}  {}", cur_digit, least_dec_places);
-                    result_str = format!("{}{}", cur_digit, result_str);
-                } else {
-                    while result_vec[dec_idx1 as usize] == 0 {
-                        dec_idx1 += 1;
-                        final_ten_power -= 1;
-                    }
-                    let whole_part = result_vec[dec_idx1 as usize].to_string();
-                    let dec_part = &result_str[0..];
-                    result_str = format!("{}{}{}", whole_part, ".", dec_part);
-
-                }
-            } else {
-                if final_regroup {
-                    cur_digit += 1;
-                    final_regroup = false;
-                }
-                if cur_digit >= 10 {
-                    final_regroup = true;
-                    cur_digit -= 10;
-                }
-                println!("{}  {}", cur_digit, least_dec_places);
-                result_str = format!("{}{}", cur_digit, result_str);
-
-            }
-        }
-        
-        if idx == (dec_idx1 + least_dec_places + 1 + final_ten_power) as usize && !is_number { //get the digit after the last sigfig
-            if *digit >= 5 {
-                final_regroup = true;
-            }
-            is_number = true;
-            
-        }
-
-
-
-        // result_str = format!("{}{}", cur_digit, result_str);
-
-
-        // if !is_number && *digit != 0_u32 {
-        //     is_number = true;
-        //     result_str.push_str(&digit.to_string());
-        //     if dec_idx1 == 0 {
-        //         result_str.push_str(".");
-        //         starting_dec_places = true;
-        //     }
-            
-        //     // println!("{}   {}    {}", result_str, least_dec_places, dec_idx1);
-        // } else if idx == dec_idx1 as usize && is_number && !starting_dec_places {
-        //     result_str.push_str(&digit.to_string());
-        //     starting_dec_places = true;
-        // } else if is_number && starting_dec_places && num_dec_places_added < least_dec_places {
-        //     num_dec_places_added += 1;
-        //     result_str.push_str(&digit.to_string());
-        // }
-
-
-    }
+    let actual_least_dec_places = cmp::min(num_dec_places1, num_dec_places2); //will be used for the error
+    let least_dec_places = &actual_least_dec_places + &result_ten_power;    // let most_num_dec_places = *cmp::max(& num_dec_places1, & num_dec_places2) as u32;
     
-    let result_num = result_str.parse::<f64>().unwrap();
-    // *************
-    
-    let error: f64 = (error1.parse::<f64>().unwrap().powi(2) + error2.parse::<f64>().unwrap().powi(2)).sqrt();
-    let mut error_str = error.to_string();
-    error_str = error_str[0..=error_str.find(".").unwrap() + (least_dec_places + 1) as usize].to_string();
-    
-    let mut error_vec = Vec::new();
-    vectorize(&error_str, &mut error_vec);
-    let mut error_str2 = String::new();
-    let mut final_error_str = String::new();
-    if error_vec[error_vec.len() - 1] >= 5 {
-        let mut regroup = true;
-        for (idx, digit) in error_vec.iter().enumerate().rev() {
-            let mut cur_digit = digit.clone();
-            if idx != error_vec.len() - 1 {
-                if regroup {
-                    cur_digit += 1;
-                    regroup = false;
-                    if cur_digit >= 10 {
-                        cur_digit -= 10;
-                        regroup = true;
-                    }
-                }
-                error_str2 = format!("{}{}", cur_digit, error_str2);
 
-            }   
-        }
 
-        let whole_part = &error_str2[0..error_str2.len() - least_dec_places as usize];
-        let dec_part = &error_str2[error_str2.len() - least_dec_places as usize..]; 
-        
-        final_error_str.push_str(whole_part);
-        final_error_str.push('.');
-        final_error_str.push_str(dec_part);
-    } else {
-        final_error_str = error_str[0..error_str.len() -2].to_string();
-    }
-    println!("{} E {}   error: {}", result_str, final_ten_power, final_error_str);
+    result_str = format!("{:.dec_places$}", result, dec_places = least_dec_places as usize);
+    // println!("Result String: {}    Least number of decimal places: {}    Numerical Result: {}", result_str, least_dec_places, result);
+    let mut error: f32 = (error1.parse::<f32>().unwrap().powf(2.0) + error2.parse::<f32>().unwrap().powf(2.0)).powf(0.5);
+    let str_error: String = format!("{:.dec_places$}", error, dec_places = actual_least_dec_places as usize);
+
+    println!("{} E {}   {}", result_str, result_ten_power, str_error);
     
 
 }
@@ -273,8 +170,6 @@ fn check_dec_places(number_vec: &mut Vec<u32>, dec_idx: i32, num_dec_places: u32
         number_vec.push(0);
     }
 }
-
-
 
 
 fn adjust_to_same_ten_power(larger_vec: &mut Vec<u32>, larger_ten_power: &mut i32, larger_dec_idx: &mut i32, smaller_vec: &mut Vec<u32>, smaller_ten_power: &mut i32, smaller_dec_idx: &mut i32) {
@@ -400,7 +295,6 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
     let e_percent2: f64 = error2.parse::<f64>().unwrap() / f64_clean_num2 / 10_f64.powi(ten_power2);
 
     let e_result: f64 = f64::sqrt(e_percent1.powi(2) + e_percent2.powi(2)); //this is the RMS_percent
-    
     let mut e_str: String = e_result.to_string();
     e_str = e_str.replace(".", ""); //you always know that the percentage can never be over 100
     //this means that as a decimal, the value is never greater than 10 or even 1
