@@ -1,3 +1,4 @@
+use core::time;
 use std::cmp;
 fn main() {
     // mult_div_error("1.1", 1, "1.", "3.10", 0, "0.01", "*");
@@ -54,39 +55,92 @@ fn main() {
     // mult_div_error("1.9051", -2, "0.000005", "1.607", -2, "0.00015", "/");
 
     // free fall lab
-    // let msmts_neg2 = vec![["1.607", "0.00015"],
-    //                                     ["1.617", "0.00009"],
-    //                                     ["1.597", "0.00007"],
-    //                                     ["1.610", "0.00006"],
-    //                                     ["1.603", "0.00013"],
-    //                                     ["1.600", "0.00006"],
-    //                                     ["1.607", "0.00003"],
-    //                                     ["1.603", "0.00009"]];
+    let msmts_neg2 = vec![["1.607", "0.00015"],
+                                        ["1.617", "0.00009"],
+                                        ["1.597", "0.00007"],
+                                        ["1.610", "0.00006"],
+                                        ["1.603", "0.00013"],
+                                        ["1.600", "0.00006"],
+                                        ["1.607", "0.00003"],
+                                        ["1.603", "0.00009"]];
 
-    // for idx in msmts_neg2.iter() {
-    //     mult_div_error("1.9051", -2, "0.000005", idx[0], -2, idx[1], "/");
-    // }
+    for idx in msmts_neg2.iter() {
+        mult_div_error("1.9051", -2, "0.000005", idx[0], -2, idx[1], "/", false);
+    }
 
-    // println!("\n\n\n\n");
+    println!("\n\n\n\n");
 
-    // let msmts_neg3 = vec![["8.77", "0.00018"],
-    //                                     ["8.03", "0.00012"],
-    //                                     ["7.03", "0.00009"],
-    //                                     ["6.83", "0.00017"],
-    //                                     ["6.33", "0.00018"],
-    //                                     ["6.07", "0.00013"],
-    //                                     ["5.70", "0.00010"],
-    //                                     ["5.50", "0.00012"]];
+    let msmts_neg3 = vec![["8.767", "0.000176"],
+                                        ["8.033", "0.000120"],
+                                        ["7.033", "0.000088"],
+                                        ["6.833", "0.000167"],
+                                        ["6.333", "0.000176"],
+                                        ["6.067", "0.000133"],
+                                        ["5.700", "0.000100"],
+                                        ["5.500", "0.000115"]];
 
-    // for idx in msmts_neg3.iter() {
-    //     mult_div_error("1.9051", -2, "0.000005", idx[0], -3, idx[1], "/");
-    // }
+    for idx in msmts_neg3.iter() {
+        mult_div_error("1.9051", -2, "0.000005", idx[0], -3, idx[1], "/", false);
+    }
 
-    add_sub_error("2.17", 0, "0.04", "1.187", 0, "0.011", "-");
+    println!("\n\n\n");
+    // add_sub_error("2.17", 0, "0.04", "1.187", 0, "0.011", "-");
+    let msmts_vfinal = vec![["2.173", "0.043"],
+                                    ["2.372", "0.024"],
+                                    ["2.709", "0.027"],
+                                    ["2.788", "0.056"],
+                                    ["3.008", "0.090"],
+                                    ["3.140", "0.063"],
+                                    ["3.342", "0.067"],
+                                    ["3.464", "0.069"]];
+
+    let mut diff: Vec<[String; 3]> = Vec::new();
+    let time_betw: Vec<[&str; 3]> = vec![["9.5500", "-2", "0.000058"],
+                                        ["1.1893", "-1", "0.00007"],
+                                        ["1.3963", "-1", "0.00003"],
+                                        ["1.5907", "-1", "0.00019"],
+                                        ["1.7740", "-1", "0.00031"],
+                                        ["1.9390", "-1", "0.00006"],
+                                        ["2.1060", "-1", "0.00021"],
+                                        ["2.2543", "-1", "0.00028"]];
+    for (idx, velocity) in msmts_vfinal.iter().enumerate() {
+        let cur_diff: Vec<String> = add_sub_error(velocity[0], 0, velocity[1], "1.187", 0, "0.011", "-", true);
+        
+        // print!("difference: {} E {}  time:  {} E {}   ", cur_diff[0], cur_diff[1], time_betw[idx][0], time_betw[idx][1]);
+        mult_div_error(cur_diff[0].as_str(), cur_diff[1].parse::<i32>().unwrap(), cur_diff[2].as_str(), time_betw[idx][0], time_betw[idx][1].parse::<i32>().unwrap(), time_betw[idx][2], "/", false);
+
+    }
+
+
+    let distance: Vec<[&str; 3]> = vec![["1.500", "-1", "0.0005"],
+                                        ["2.000", "-1", "0.0005"],
+                                        ["2.500", "-1", "0.0005"],
+                                        ["3.000", "-1", "0.0005"],
+                                        ["3.500", "-1", "0.0005"],
+                                        ["4.000", "-1", "0.0005"],
+                                        ["4.500", "-1", "0.0005"],
+                                        ["5.000", "-1", "0.0005"]];
+
+
+    println!("\n\n\n\nexponential error");
+    for (idx, time) in time_betw.iter().enumerate() {
+        println!("Distance {}", idx + 1);
+        
+        let calc1: Vec<String> = mult_div_error("1.187", 0, "0.011", time[0], time[1].parse::<i32>().unwrap(), time[2], "*", false);
+        let calc2: Vec<String> = add_sub_error(distance[idx][0], distance[idx][1].parse::<i32>().unwrap(), distance[idx][2], calc1[0].as_str(), calc1[1].parse::<i32>().unwrap(), calc1[2].as_str(), "-", false);
+        let calc3: Vec<String> = constant_mult_err(calc2[0].as_str(), calc2[1].parse::<i32>().unwrap(), calc2[2].as_str(), 2, false);
+        let time_squared =  exp_error(time[0], time[1].parse::<i32>().unwrap(), time[2], 2, false);
+        mult_div_error(calc3[0].as_str(), calc3[1].parse::<i32>().unwrap(), calc3[2].as_str(), time_squared[0].as_str(), time_squared[1].parse::<i32>().unwrap(), time_squared[2].as_str(), "/", false);
+        
+        println!("\n\n\n");
+    }
+    
+
+
 
 }
 
-fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str) {
+fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str, no_print: bool) -> Vec<String> {
     let valid_input1: bool = check_error(&number1, &error1, &ten_power1);
     let valid_input2: bool = check_error(&number2, &error2, &ten_power2);
     if !valid_input1 || !valid_input2 {
@@ -121,6 +175,7 @@ fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, te
         result = &number1.parse::<f32>().unwrap() * 10f32.powf(ten_power1 as f32) + &number2.parse::<f32>().unwrap() * 10f32.powf(ten_power2 as f32);
     }
 
+
     let mut result_ten_power: i32 = 0;
     if result < 10_f32 {
         while result < 1.0 {
@@ -128,7 +183,7 @@ fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, te
             result_ten_power -= 1;
         }
     } else if result > 10_f32 {
-        while result > 1.0 {
+        while result > 10.0 {
             result /= 10_f32;
             result_ten_power += 1;
         }
@@ -147,57 +202,18 @@ fn add_sub_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, te
     let mut error: f32 = (error1.parse::<f32>().unwrap().powf(2.0) + error2.parse::<f32>().unwrap().powf(2.0)).powf(0.5);
     let str_error: String = format!("{:.dec_places$}", error, dec_places = actual_least_dec_places as usize);
 
-    println!("{} E {}   {}", result_str, result_ten_power, str_error);
-    
-
-}
-
-
-fn check_whole_places(number_vec: &mut Vec<u32>, dec_idx: &mut i32, num_whole_places: i32) {
-    loop {
-        
-        if *dec_idx + 1 != num_whole_places {
-            break;
-        }
-
-        number_vec.insert(0, 0);
-        *dec_idx += 1;
+    if !no_print {
+        println!("{} E {}   {}", result_str, result_ten_power, str_error);
     }
-}
-
-fn check_dec_places(number_vec: &mut Vec<u32>, dec_idx: i32, num_dec_places: u32) {
-    while number_vec.len() as u32 - (dec_idx + 1) as u32 != num_dec_places{
-        number_vec.push(0);
-    }
-}
-
-
-fn adjust_to_same_ten_power(larger_vec: &mut Vec<u32>, larger_ten_power: &mut i32, larger_dec_idx: &mut i32, smaller_vec: &mut Vec<u32>, smaller_ten_power: &mut i32, smaller_dec_idx: &mut i32) {
-    loop {
-        if larger_ten_power != smaller_ten_power {
-            //shift the larger_ten_power down, meaning add 0s at the beginning
-            //shift the smaller_ten_power up, meaning add 1s at the beginning
-            *larger_ten_power -= 1;
-            *larger_dec_idx += 1;
-            if *larger_dec_idx as u32 > larger_vec.len() as u32 {
-                larger_vec.push(0);
-            }
-
-            if larger_ten_power != smaller_ten_power {
-                *smaller_ten_power += 1;
-                // smaller_dec_idx doesn't change
-                smaller_vec.insert(0, 0);
-            } else {
-                break;
-            }
-
-        }
-    }
+    let result_vec: Vec<String> = vec![result_str, result_ten_power.to_string(), str_error];
+    return result_vec
 
 }
 
 
-fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str){
+
+
+fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, ten_power2: i32, error2: &str, operation: &str, no_print: bool) -> Vec<String>{
     //make sure that the errors properly match the measurement and the number of decimal places
     let valid_input1: bool = check_error(&number1, &error1, &ten_power1);
     let valid_input2: bool = check_error(&number2, &error2, &ten_power2);
@@ -205,272 +221,276 @@ fn mult_div_error(number1: &str, ten_power1: i32, error1: &str, number2: &str, t
         panic!("wtf are you doing with the msmts and errors");
     }
 
-
-    
-    let mut msmt_vector: Vec<u32> = Vec::new();
-    let mut is_negative: bool = false; //tells whether the result will be negative or not
-    
-    //1.) remove the negative sign
-    let clean_num1: String = String::from(clean_num(&number1, &mut is_negative, false));
-    let mut num_places1: i32 = clean_num1.len() as i32; //for multiplication
-    if clean_num1.find(".") != None {
+    // 1.) take care of the negative sign; take care of the number of sig figs for each number
+    let mut is_negative: bool = false;
+    let num1: f64 = number1.parse::<f64>().unwrap() * 10_f64.powf(ten_power1 as f64);
+    let mut num_places1 = number1.len();
+    if number1.contains('.') {
         num_places1 -= 1;
-
     }
-    let f64_clean_num1: f64 = clean_num1.parse::<f64>().unwrap();
+    if number1.contains('-') {
+        num_places1 -= 1;
+    }
 
-    let clean_num2: String = String::from(clean_num(&number2, &mut is_negative, false));
-    let mut num_places2: i32 = clean_num2.len() as i32; //for multiplication
-    if clean_num2.find(".") != None {
+    let num2: f64 = number2.parse::<f64>().unwrap() * 10_f64.powf(ten_power2 as f64);
+    let mut num_places2 = number2.len();
+    if number2.contains('.') {
         num_places2 -= 1;
     }
-    let f64_clean_num2: f64 = clean_num2.parse::<f64>().unwrap();
+    if number2.contains('-') {
+        num_places2 -= 1;
+    }
     
-
     //2.) perform the operation
     let mut result: f64 = 0.0;
     if operation == "*" {
-        result = f64_clean_num1 * f64_clean_num2;
+        result = num1 * num2;
     } else if operation == "/" {
-        result = f64_clean_num1 / f64_clean_num2;
+        result = num1 / num2;
+    }
+    
+    if result < 0.0 {
+        is_negative = true;
+        result *= -1.0;
     }
     //to check when putting into scientific notation, whether or not you have to move the decimal place back
     let least_sigfigs = cmp::min(num_places1, num_places2) as i32; //works
     
-    let mut final_ten_power: i32 = 0;
     
-    loop {
-        if result < 1.0 {
+    let mut result_ten_power: i32 = 0;
+    // println!("{}   ten power: {}", result, result_ten_power);
+    let mut actual_dec_place: i32 = least_sigfigs.clone() - 1;
+    if result < 10.0 {
+        while result < 1.0 {
             result *= 10.0;
-            final_ten_power -= 1;
-        } else {
-            break;
+            result_ten_power -= 1;
+            actual_dec_place += 1;
+        }
+    } else if result > 10.0 {
+        while result > 10.0 {
+            result /= 10.0;
+            result_ten_power += 1;
+            actual_dec_place -= 1;
         }
     }
-        
-
-
-    
-    let mut str_result: String = result.to_string();
-    if str_result.find('.') == None {
-        str_result.push('.');
+    if is_negative {
+        result *= -1.0;
     }
+    let str_result = format!("{:.dec_places$}", result, dec_places=(least_sigfigs - 1) as usize);
     
-
-    //3.) round to the appropriate number of sigfigs
-    // First: obtain the digit after the last place
-    //vectorize the digit to make this possible
-    //Second: identify if this digit is >= 5, if so, then increase the previous digit by one
-
-    // vectorize(str_result, &mut msmt_vector);
-    match operation {
-        "*" => {
-            final_ten_power += ten_power1 + ten_power2;
-        }, 
-        "/" => {
-            final_ten_power += ten_power1 - ten_power2;
-        },
-        _ => panic!("Please enter either * for multiplication or / for division"),
-    }
+    let mut error = ((error1.parse::<f64>().unwrap()/(num1)).powf(2.0) + 
+                        (error2.parse::<f64>().unwrap()/(num2)).powf(2.0)).powf(0.5);
+    // println!("{}      {}      {}", error, (error1.parse::<f64>().unwrap()/(num1)).powf(2.0), (error2.parse::<f64>().unwrap()/(num2)).powf(2.0));
+    let raw_str_error = String::from(error.to_string());
     
-    if &str_result[0..1] == "0" && final_ten_power > 0{
-        str_result = (result * 10_f64.powi(final_ten_power)).to_string();
-        final_ten_power = 0;
-    }
-    
-    
-    //clean up str_result so that it has a digit larger than 1
-
-    let final_msmt: String = round_vector(&mut str_result, least_sigfigs, &mut msmt_vector, &mut final_ten_power);
-    
-    let mut final_msmt_num: f64 = final_msmt.parse::<f64>().unwrap();
-
-
-
-
-    // *******************************************
-    //Calculating the errors
-    //find the percentages
-    let e_percent1: f64 = error1.parse::<f64>().unwrap() / f64_clean_num1 / 10_f64.powi(ten_power1);
-    let e_percent2: f64 = error2.parse::<f64>().unwrap() / f64_clean_num2 / 10_f64.powi(ten_power2);
-
-    let e_result: f64 = f64::sqrt(e_percent1.powi(2) + e_percent2.powi(2)); //this is the RMS_percent
-    let mut e_str: String = e_result.to_string();
-    e_str = e_str.replace(".", ""); //you always know that the percentage can never be over 100
-    //this means that as a decimal, the value is never greater than 10 or even 1
-    //there will alwayas be a ones place
-    let mut e_vec: Vec<u32> = Vec::new();
-    vectorize(& e_str, &mut e_vec);
-    let mut rms_percent_str = "0.".to_string();
-    
-    for (idx, digit) in e_vec.iter().enumerate() {
-        
-        if *digit != 0 {
-            //if larger than 1 percent, round to the whole percent; round to the nearest hundredths place
-            if idx == 1 || idx == 2 { //means caught in the tenths or hundredths place, need to round to the nearest hundredths place
-                let mut hundredths = e_vec[2];
-                let mut tenths = e_vec[1];
-                if e_vec[3] >= 5 {
-
-                    hundredths += 1;
-                    if hundredths >= 10 {
-                        hundredths -= 10;
-                        tenths += 1;
-                    }
-                }
-                rms_percent_str = format!("{}{}{}", "0.", tenths, hundredths);
+    if error < 0.01 {
+        let mut percent_dec_places = -2_i32;
+        for (idx, letter) in raw_str_error.chars().enumerate() {   
+            percent_dec_places += 1;
+            if letter != '0' && letter != '.' {
                 break;
-            } else { //means caught beyond the hundredths place
-                let mut error_digit = *digit;
-                if e_vec[idx + 1] >= 5 {
-                    error_digit += 1;
-                } 
-                rms_percent_str = format!("{}{}", rms_percent_str, error_digit);
             }
-            //if less than 1 percent, round to the first non-zero digit
-            break;
-        } else if idx != 0{
-            rms_percent_str.push('0');
         }
         
+        let percent = format!("{:.dec_places$}", error, dec_places=percent_dec_places as usize).parse::<f64>().unwrap();
+        error = percent * str_result.parse::<f64>().unwrap() * 10_f64.powf(result_ten_power as f64);
+        
+    } else if error >= 0.01 {
+        let percent = format!("{:.2}", error).parse::<f64>().unwrap();
+        error = percent * str_result.parse::<f64>().unwrap() * 10_f64.powf(result_ten_power as f64);
     }
-
-    let rms_percent_f: f64 = rms_percent_str.parse::<f64>().unwrap();
-    let final_error_stage1 =  final_msmt_num * rms_percent_f; //now you must consider the tens powers
     
-    let mut ten: f64 = 10.0;
-    let mut final_error_stage2: String = final_error_stage1.to_string();
-    if final_error_stage2.find(".") == None {
-        final_error_stage2.push('.');
+    let str_error = format!("{:.dec_places$}", error, dec_places=actual_dec_place as usize);
+    // println!("error: {}   num1: {}    num2: {}", error, num1, num2);
+
+    
+    if !no_print {
+        println!("{} E {}   +- {}", str_result, result_ten_power, str_error);
     }
-    // println!("{}",rms_percent_f);
-    let mut final_error_stage3: String = String::new();
-    let mut final_error_vec: Vec<u32> = Vec::new();
-    let mut error_ten_power = 0;
-    if final_msmt_num * ten.powi(final_ten_power) % 1.0 == 0.0 { //This means that the msmt is a whole number
-        //The error when applied to just the msmt part, not the tens powers, could be a decimal
-        //but it could also be a whole number
-        
-        if final_error_stage1 < 1.0 {
-            //have to shift the decimal place until we get a whole number, number of places shifted subtract from the final-tens-power
-            vectorize(& final_error_stage2, &mut final_error_vec);
-            
-            if final_msmt_num * rms_percent_f * 10_f64.powi(final_ten_power) < 1.0 {
-                final_error_stage3 = String::from("1.");
-            } else {
-                decimal_to_sci_not(&mut final_error_stage3, &mut final_error_vec, &final_msmt, &final_ten_power, &mut error_ten_power);
-            }
+    
+    let result_vec: Vec<String> = vec![str_result, result_ten_power.to_string(), str_error];
+    return result_vec
 
-            
-            
 
-            // final_error_stage3 will hold the final version of the error as a string
-            // final_error_vec is used to help with manipulating the digits to get the number into scientific notation
-            // error_ten_power holds the power that the error will be raised to
-            // this method also accounts for rounding
+}
 
-            // let mut reduce_ten_pow: i32 = 0;
-            // let mut is_number: bool = false;           
-            // let mut num_digits_left: i32 = 0;
-            // for (idx, digit) in final_error_vec.iter().enumerate() {
-            //     if *digit != 0 && is_number == false{
-            //         reduce_ten_pow += 1;
-            //         final_error_stage3.push_str(&digit.to_string());
-            //         final_error_stage3.push('.');
-            //         error_ten_power = final_ten_power - reduce_ten_pow;
-            //         num_digits_left = final_ten_power - reduce_ten_pow;          
-            //         is_number = true;         
-            //     } else if idx != 0 {
-            //         reduce_ten_pow += 1;
-            //     } else if is_number == true {
-            //         final_error_stage3.push_str(&digit.to_string());
-            //         num_digits_left -= 1;
-            //         if num_digits_left == 0 {
-            //             break;
-            //         }
-            //     }
-            // }
-            
-            
-        } else if final_error_stage1 > 1.0 { 
-            //have to shift the decimal place
-            
-            if final_error_stage1 * 10_f64.powi(final_ten_power) % 1.0 == 0.0 {
-                final_error_stage3 = final_error_stage2;
-                error_ten_power = final_ten_power.clone();
-            } else {
-                vectorize(&final_error_stage2, &mut final_error_vec);
-                final_error_stage3 = round_vector(&mut final_error_stage2, final_ten_power + 1, &mut final_error_vec, &mut error_ten_power);
-                final_error_stage3 = final_error_stage3[0..final_error_stage2.find(".").unwrap() + (final_ten_power + 1) as usize].to_string();
-                
-                error_ten_power = final_ten_power.clone();
-            }
+fn exp_error(number1: &str, ten_power1: i32, error1: &str, power: i32, no_print: bool) -> Vec<String>{
+    //make sure that the errors properly match the measurement and the number of decimal places
+    let valid_input1: bool = check_error(&number1, &error1, &ten_power1);
+    
+    if !valid_input1 {
+        panic!("wtf are you doing with the msmts and errors");
+    }
+
+    // 1.) take care of the negative sign; take care of the number of sig figs for each number
+    
+    let num1: f64 = number1.parse::<f64>().unwrap() * 10_f64.powf(ten_power1 as f64);
+    let mut num_places1 = number1.len();
+    if number1.contains('.') {
+        num_places1 -= 1;
+    }
+    if number1.contains('-') {
+        num_places1 -= 1;
+    }
+
+    
+    
+    //2.) perform the operation
+    let mut is_negative: bool = false;
+    let mut result: f64 = num1.powf(power as f64);
+    if result < 0.0 {
+        is_negative = true;
+        result *= -1.0;
+    }
+    //to check when putting into scientific notation, whether or not you have to move the decimal place back
+    let least_sigfigs = num_places1 as i32; //works
+    
+    
+    let mut result_ten_power: i32 = 0;
+    // println!("{}   ten power: {}", result, result_ten_power);
+
+    let mut actual_dec_place: i32 = least_sigfigs.clone() - 1; //number of decimal places in sci notation
+
+    if result < 10.0 {
+        while result < 1.0 {
+            result *= 10.0;
+            result_ten_power -= 1;
+            actual_dec_place += 1;
         }
-
-        
-    } else { //if there are decimal places, we need to check that there are the same number of decimal placles
-        //find the number of decimal places in the final msmt
-        //find what the tens_power is
-        //Possible cases: 1.) the error has too many decimal places 
-        //2.) the error needs more decimal places so add 0s
-        //3.) the error has enough decimal places (will be determined when checking both)
-        
-        
-        if final_error_stage1 < 1.0 { //error is a number smaller than 1
-            // let num_dec_places: usize = final_ten_power * -1 + final_msmt.len() as u32 - 1;
-            let dec_pos = final_error_stage2.find(".").unwrap() as u32;
-            vectorize(&final_error_stage2, &mut final_error_vec);
-            decimal_to_sci_not(&mut final_error_stage3, &mut final_error_vec, &final_msmt, &final_ten_power, &mut error_ten_power);
-            
-            
-        } else if final_error_stage1 > 1.0 { //otherwise we have a number larger than 1 but with decimal places
-            let num_dec_places: usize = final_msmt[final_msmt.find(".").unwrap()..final_msmt.len()].len();
-            let dec_pos = final_error_stage2.find(".").unwrap();
-            if dec_pos + num_dec_places == final_error_stage2.len() { //has the perfect amt
-                final_error_stage3 = final_error_stage2;
-            } else if dec_pos + num_dec_places > final_error_stage2.len() { //meaning that the needed dec_places is more; so add 0s
-                let num_zeros = dec_pos + num_dec_places - (final_error_stage2.len());
-                for i in [0..num_zeros] {
-                    final_error_stage2.push('0');
-                }
-            } else if dec_pos + num_dec_places < final_error_stage2.len() { //meaning that the needed dec_places is less; so rounding
-                error_ten_power = final_ten_power;
-                final_error_stage3 = round_vector(&mut final_error_stage2, (dec_pos + num_dec_places - 1) as i32 , &mut final_error_vec, &mut error_ten_power);
-            }
-            // final_error_stage3.push_str(&final_error_stage2[0..dec_pos]);
-            // final_error_stage3.push_str(&final_error_stage2[dec_pos..dec_pos + num_dec_places + 1]);
+    } else if result > 10.0 {
+        while result > 10.0 {
+            result /= 10.0;
+            result_ten_power += 1;
+            actual_dec_place -= 1;
         }
     }
-    println!("{} E {}   +- {} E {}", final_msmt, final_ten_power, final_error_stage3, error_ten_power);
+
+
+    if is_negative {
+        result *= -1.0;
+    }
+    let str_result = format!("{:.dec_places$}", result, dec_places=(least_sigfigs - 1) as usize);
+    
+    let mut error = error1.parse::<f64>().unwrap()/(num1) * power as f64;
+    let raw_str_error = String::from(error.to_string());
+    
+
+    //error holds a percentage / 100%
+    //this process rounds the percentage
+    if error < 0.01 {
+        let mut percent_dec_places = -2_i32;
+        for (idx, letter) in raw_str_error.chars().enumerate() {   
+            percent_dec_places += 1;
+            if letter != '0' && letter != '.' {
+                break;
+            }
+        }
+        
+        let percent = format!("{:.dec_places$}", error, dec_places=percent_dec_places as usize).parse::<f64>().unwrap();
+        error = percent * str_result.parse::<f64>().unwrap() * 10_f64.powf(result_ten_power as f64);
+        
+    } else if error >= 0.01 {
+        let percent = format!("{:.2}", error).parse::<f64>().unwrap();
+        error = percent * str_result.parse::<f64>().unwrap() * 10_f64.powf(result_ten_power as f64);
+    }
+    
+    let str_error = format!("{:.dec_places$}", error, dec_places=actual_dec_place as usize);
+    // println!("error: {}   num1: {}    num2: {}", error, num1, num2);
+
+    
+    if !no_print {
+        println!("{} E {}   +- {}", str_result, result_ten_power, str_error);
+    }
+
+    let result_vec: Vec<String> = vec![str_result, result_ten_power.to_string(), str_error];
+    return result_vec
     
 }
 
-//This function removes the decimal point and the negative sign;
-fn clean_num<'a>(number: &'a str, is_negative: &'a mut bool, is_adding: bool) -> String{
-    let mut temp_int = String::from(number); //the number string; in case this is just a whole number
-    if is_adding == true {
-        if number.find(".") != None {
-            temp_int = number.replace(".", "");
-        }
-    } else {
-        if number.find("-") != None {
-            temp_int = number.replace("-", "");
-            //switch the negative result status
-            if *is_negative == true {
-                *is_negative = false;
-            } else {
-                *is_negative = true;
-            }
-        }
 
+
+fn constant_mult_err(number1: &str, ten_power1: i32, error1: &str, constant: i32, no_print: bool) -> Vec<String>{
+    //make sure that the errors properly match the measurement and the number of decimal places
+    let valid_input1: bool = check_error(&number1, &error1, &ten_power1);
+    
+    if !valid_input1 {
+        panic!("wtf are you doing with the msmts and errors");
+    }
+
+    // 1.) take care of the negative sign; take care of the number of sig figs for each number
+    
+    //Getting the raw number ********
+    let num1: f64 = number1.parse::<f64>().unwrap() * 10_f64.powf(ten_power1 as f64);
+
+    let mut num_places1 = number1.len();
+    if number1.contains('.') {
+        num_places1 -= 1;
+    }
+    if number1.contains('-') {
+        num_places1 -= 1;
     }
 
     
+    
+    //2.) perform the operation
+    let mut is_negative: bool = false;
+    let mut result: f64 = num1 * constant as f64;
+    if result < 0.0 {
+        is_negative = true;
+        result *= -1.0;
+    }
+    //to check when putting into scientific notation, whether or not you have to move the decimal place back
+    let least_sigfigs = num_places1 as i32; //works
+    
+    
+    let mut result_ten_power: i32 = 0;
+    // println!("{}   ten power: {}", result, result_ten_power);
 
-    return temp_int
+    let mut actual_dec_place: i32 = least_sigfigs.clone() - 1; //number of decimal places in sci notation
+
+    if result < 10.0 {
+        while result < 1.0 {
+            result *= 10.0;
+            result_ten_power -= 1;
+            actual_dec_place += 1;
+        }
+    } else if result > 10.0 {
+        while result > 10.0 {
+            result /= 10.0;
+            result_ten_power += 1;
+            actual_dec_place -= 1;
+        }
+    }
+
+
+    if is_negative {
+        result *= -1.0;
+    }
+    let str_result = format!("{:.dec_places$}", result, dec_places=(least_sigfigs - 1) as usize);
+    
+    let mut error = error1.parse::<f64>().unwrap() * constant as f64;
     
 
+    //error holds a percentage / 100%
+    //this process rounds the percentage
+    
+    
+    let str_error = format!("{:.dec_places$}", error, dec_places=actual_dec_place as usize);
+    // println!("error: {}   num1: {}    num2: {}", error, num1, num2);
+
+    
+    if !no_print {
+        println!("{} E {}   +- {}", str_result, result_ten_power, str_error);
+    }
+
+    let result_vec: Vec<String> = vec![str_result, result_ten_power.to_string(), str_error];
+    return result_vec
+    
+    
 }
+
+
+
 
 fn vectorize(number: &String, msmt_vector: &mut Vec<u32>) { //this is for addition and subtraction
     
@@ -484,88 +504,6 @@ fn vectorize(number: &String, msmt_vector: &mut Vec<u32>) { //this is for additi
 
 fn print_number(msmt_vector: & Vec<u32>) {
     println!("{:?}", msmt_vector);
-}
-
-fn round_vector(str_result: &mut String, least_sigfigs: i32, msmt_vector: &mut Vec<u32>, final_ten_power: &mut i32) -> String {
-    //str_result is >= 1.0
-    //rounds to the number of sigfigs
-    //stores in msmt_vector
-    //final_ten_power used for regrouping purposes
-    // println!("{} {} {:?} {}", str_result, least_sigfigs, msmt_vector, final_ten_power);
-    let mut result: String = String::new();
-    
-
-    let mut idx = 0;
-    
-    let mut dec_pos: usize = str_result.find('.').unwrap() - 1 as usize;
-    
-     //getting the position of the '.'
-    //taken from the string; means that this can either be 1 or 2; must check if the first element in the vector regroups to add one more to the position of the '.'
-    //round the number
-
-    //1.) first get the vector without the decimal point
-    if !msmt_vector.is_empty() {
-        msmt_vector.clear();
-    }
-
-    vectorize(str_result, msmt_vector);
-    
-
-    
-    let mut regroup = false;
-    let mut extra_for_less_than_zero = 0;
-    // if msmt_vector[0] == 0 {
-    //     extra_for_less_than_zero = 1;
-    // }
-
-    if least_sigfigs == 0 {
-        extra_for_less_than_zero = 1;
-    }
-    
-    let digit: u32 = msmt_vector[(least_sigfigs + extra_for_less_than_zero) as usize]; //this starts at the digit after the last sigfig digit
-    if digit >= 5 { //if the digit after the last sigfig is greater than or equal to 5, then the previous...
-        regroup = true;
-    }
-
-    
-    loop {
-        let mut last_sigfig = msmt_vector[(least_sigfigs + extra_for_less_than_zero - 1 - idx) as usize];
-
-        if regroup {
-            last_sigfig += 1;
-            if last_sigfig >= 10  {
-                last_sigfig -= 10;
-                regroup = true;
-                if (1 + idx) == least_sigfigs { //this means that you regrouped to the first sigfig; you have to remove the last sigfig
-                    result = format!("{}{}{}", (1).to_string(), last_sigfig, result);
-                    result = (&result[0..result.len() - 1]).to_string();
-                    dec_pos = dec_pos + (1 as u32 as usize)
-                }
-            } else {
-                regroup = false;
-            }
-        } 
-
-        result = format!("{}{}", last_sigfig, result);
-        idx += 1;
-
-        if (idx + 1) > least_sigfigs {
-            break;
-        }
-    }
-    
-
-    result = format!("{}{}{}", &result[0..=0], ".".to_string(), &result[1..result.len()]);
-    
-    match dec_pos {
-        0 => (),
-        1 => {*final_ten_power += 1},
-        2 => {*final_ten_power += 2},
-        _ => {
-            panic!("wtf did you do with the numbers; Here is your result: {} The dec_pos was at: {}", result, dec_pos);
-        }, 
-    }
-    return result
 }
 
 fn check_error(number: &str, error: &str, ten_power: &i32) -> bool {
@@ -591,113 +529,4 @@ fn check_error(number: &str, error: &str, ten_power: &i32) -> bool {
     }
 
     return true
-}
-
-//for errors only; considering that at this point, the final_ten_power will be, (not yet tho) the error_ten_power
-fn decimal_to_sci_not(str_result: &mut String, final_error_vec: &mut Vec<u32>, final_msmt: &String, final_ten_power: & i32, error_ten_power: &mut i32) {
-    //the purpose of this function is to turn a decimal less than 1 to scientific notation
-    //str_result is empty: it is intended to hold the result
-    //final_error_vec contains the number
-    //error_ten_power is empty
-    //Problem how to get which place to round to: final_ten_power.abs() tells you which idx the number starts at (1 * 10^-2 -> 0.0* where * is at idx 2 in vector)
-    //then you just have to consider the final_msmt.len() - 1 - 1 (remember the decimal place and the ones place)
-    let mut reduce_ten_pow: i32 = 0;
-    let mut is_number: bool = false;
-    let mut need_to_round = false;
-    let mut num_digits_left: i32 = -1;
-    // println!("{:?}  {}", final_error_vec, error_ten_power);
-    //this is the part actually doing the conversion to sci
-    let mut num_dec_places_in_msmt = (final_msmt[final_msmt.find(".").unwrap()..].len() as u32 - 1_u32) as i32 - *final_ten_power;
-
-    for (idx, digit) in final_error_vec.iter().enumerate() {
-        if *digit != 0 && is_number == false && idx != 0{
-            reduce_ten_pow += 1;
-            str_result.push_str(&digit.to_string());
-            str_result.push('.');
-
-            *error_ten_power += *final_ten_power;
-            *error_ten_power -= reduce_ten_pow;
-            // println!("{}", error_ten_power);
-            
-            //need the same number of decimal places as the final_msmt
-            //how do you find the number of decimal places in the final_msmt
-            //take the number of decimal places available first, subtract the tens powers from it (-tens powers add to it)
-            // num_digits_left = *final_ten_power; //if your error was 0.0005 * 10^-6, for everytime you moved the decimal place up to make it larger, you have to decrease the power 
-            // num_digits_left -= reduce_ten_pow; //we run into a problem when the result is 0
-            // num_digits_left = num_digits_left.abs();
-            // println!("{}", num_digits_left);
-            
-            if num_dec_places_in_msmt < 0 { // this means that the number has no decimal places
-                num_dec_places_in_msmt = 0;
-            } else { //otherwise if there are decimal places, we need to consider how many to grab; remember that the error_vec 
-                //that was passed in is always < 0 and will have the final_ten_power applied
-                num_digits_left =  num_dec_places_in_msmt as i32 - reduce_ten_pow + *final_ten_power;
-                
-            }
-            // println!("{}    {}    {}", final_msmt, num_digits_left, num_dec_places_in_msmt);
-            
-            //else if *final_ten_power < 0 {
-            //     *error_ten_power += ;
-            // }
-            //must also add the number of decimal places from the final_msmt
-            // let final_msmt_dec_places = final_msmt[final_msmt.find(".").unwrap()..].len() as i32 - final_ten_power;
-            // num_digits_left += 
-            
-            
-            is_number = true;
-            
-        } else if idx != 0 && !is_number {
-            reduce_ten_pow += 1;
-
-        } else if is_number == true {
-            if num_digits_left != 0 {
-                str_result.push_str(&digit.to_string());
-                num_digits_left -= 1;
-            }
-
-            if idx == final_error_vec.len() - 1 && num_digits_left != 0 {
-                for i in [0..num_digits_left] {
-                    str_result.push('0');
-                }
-            }
-
-        }
-        
-
-
-        if num_digits_left == 0 {
-            if idx != final_error_vec.len() { //meaning that there are still digits left, then you need to round
-                str_result.push_str(&(final_error_vec[idx + 1]).to_string());
-                need_to_round = true;
-            } //otherwise, there's no need to round because you caught the last digit and there's nothing you need to look at to round
-            
-            break;
-        }
-
-
-    }
-
-    // print_number(&final_error_vec);
-    if need_to_round {
-        // let mut num_dec_places_round = final_ten_power.abs() as i32 + (final_msmt.len() as i32 - 2); //this will get you how many decimal places the final_msmt has
-        let mut num_dec_places_round = num_dec_places_in_msmt.clone();
-        // if *final_ten_power > 0 {
-        //     num_dec_places_round -= *final_ten_power
-        // }
-        
-        num_dec_places_round += *error_ten_power + 1;
-        
-        // println!("{} {}", num_dec_places_in_msmt, num_dec_places_round);
-
-        //error_ten_power is always negative
-
-        //REMEMBER: final_ten_power = error_ten_power; BUT error_ten_power changes depending on how much smaller the error was, 
-        //since error is smaller, sometimes the error_ten_power is a larger negative value; meaning less places for the error
-
-        //you are rounding the error so this may lead to changes in the error_ten_power, not the final_ten_power of the msmt
-        // println!("{}", num_dec_places_round);
-        // print_number(&final_error_vec);
-        *str_result = round_vector(str_result, num_dec_places_round, final_error_vec, error_ten_power);
-    }
-    //now final_error_stage3 will hold the final result, but you need to remember to round
 }
